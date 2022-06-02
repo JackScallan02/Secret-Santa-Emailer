@@ -1,7 +1,6 @@
 
 
-function addPerson() { //Adds a div with 2 inputs into the form
-
+function addPerson() { //Adds a div with 1 input into the form
   errorLabel = document.getElementById("error-label");
   errorLabel.style.opacity = 0;
 
@@ -14,107 +13,161 @@ function addPerson() { //Adds a div with 2 inputs into the form
   input.type = "text";
   input.className = "textbox-name";
 
-  div1.appendChild(input);
+  var input2 = document.createElement("input");
+  input2.type = "text";
+  input2.className = "textbox-name";
 
-  var input = document.createElement("input");
-  input.type = "text";
-  input.className = "textbox-email";
   div1.appendChild(input);
+  div1.appendChild(input2);
 
   form.appendChild(div1);
 }
 
-function removePerson() {
+function getNumberOfPeople() {
   var form = document.getElementById("center-form");
-  if ((form.length / 2) > 3) {
+  var total = 0;
+  for (var i = 0; i < form.length / 2; i++) {
+    if (form.children[i].children[0].value != '' && form.children[i].children[1].value != '') {
+      total += 1;
+    }
+  }
+  return total;
+}
+
+function getNumberOfInputs() {
+  var form = document.getElementById("center-form");
+  return form.length/2;
+}
+
+
+function displayError() {
+  errorLabel = document.getElementById("error-label");
+  errorLabel.style.opacity = 1;
+  errorLabel.innerHTML = "You must have at least 3 people!";
+}
+
+function removePerson() {
+  var numPeople = getNumberOfPeople();
+  var numInputs = getNumberOfInputs();
+
+  if (numPeople > 3 || numInputs > 3) {
+    var form = document.getElementById("center-form");
     form.removeChild(form.lastChild);
   } else {
-    errorLabel = document.getElementById("error-label");
-    errorLabel.style.opacity = 1;
-    errorLabel.innerHTML = "You must have at least 3 people!";
+    displayError();
   }
 }
 
 
-function getData() {
-  var emails = document.getElementById("center-form");
 
-  var people = [];
+var submitButton = document.getElementById("submit-button");
+submitButton.addEventListener("click", function() {
+  var numPeople = getNumberOfPeople();
+  if (numPeople < 3) {
+    displayError();
+    return;
+  }
 
-  numPeople = emails.length / 2;
+  var inputs = enumerateInputs();
+  var pairs = createSantas(inputs);
 
-  for (var i = 0; i < numPeople; i++) {
-    let name = emails.children[i].children[0].value;
-    let email = emails.children[i].children[1].value;
+});
 
-    if (name != "" && email != "") {
-      people.push([name, email]);
+function enumerateInputs() {
+  var form = document.getElementById("center-form");
+  var numPeople = getNumberOfPeople();
+  var people = makeEmptyArray();
+  var emptyInputs = 0;
+
+  for (var i = 0; i < form.children.length; i++) {
+    if (form.children[i].children[0].value != '' && form.children[i].children[1].value != '') {
+      for (var j = 0; j < 2; j++) {
+        people[i - emptyInputs][j] = form.children[i].children[j].value;
+      }
+    } else {
+      emptyInputs++;
     }
-
   }
 
   return people;
 }
 
 
-var submitButton = document.getElementById("submit-button");
+//inputs: 2D Array of format [[person, email], [person, email], ...]
+//people: 2D Array as a dictionary format in which each key is a person and their value is None
+          //will be returned as [person, [person they have, person's email]]
+function createSantas(inputs) {
 
-submitButton.addEventListener("click", function() {
-
-  var info = getData();
-
-  var errorLabel = document.getElementById("error-label");
-
-  if ((info.length >= 3) ) {
-    var santas = createSantas(info)
-    errorLabel.style.opacity = 0;
-    sendEmails(santas)
-  } else {
-    console.log("Not enough people!");
-    errorLabel.style.opacity = 1;
-    errorLabel.innerHTML = "Not enough people!";
+  var people = []
+  for (var i = 0; i < inputs.length; i++) {
+    people.push([inputs[i][0], null]);
   }
 
-  var form = document.getElementById("center-form");
+  shuffle(people); //Start iterating through each person in a random order
 
-});
+  var chooseArray = people.slice();
 
+  var randomIndex;
 
-function createSantas(info) {
-  randomIndex = getRandomInt(1, info.length - 1);
-  out = [];
-  dynamicList = info.slice();
+  for (var i = 0; i < people.length; i++) {
 
-  for (var i = 0; i < info.length; i++) {
-    while (info[i] == dynamicList[randomIndex]) {
-      randomIndex = getRandomInt(0, dynamicList.length - 1);
-      if (dynamicList.length == 1) {
-          break;
+    randomIndex = getRandomInt(0, chooseArray.length - 1);
+
+    while (people[i][0] == chooseArray[randomIndex][0]) {
+      randomIndex = getRandomInt(0, chooseArray.length - 1);
+    }
+
+    //console.log(people[i][0]);
+    for (var j = 0; j < inputs.length; j++) {
+      if (inputs[j][0] == people[i][0]) {
+        people[i][1] = [chooseArray[randomIndex][0], inputs[j][1]];
+        break;
       }
     }
 
-    out.push([info[i][0], dynamicList[randomIndex][1]]);
-    dynamicList.splice(randomIndex, 1)
+    chooseArray.splice(randomIndex, 1);
 
-    if (dynamicList.length > 0) {
-      randomIndex = getRandomInt(0, dynamicList.length - 1);
+    if (chooseArray.length == 1) {
+      if (people[i + 1][0] == chooseArray[0][0]) {
+        return createSantas(inputs);
+      } else {
+        for (var j = 0; j < inputs.length; j++) {
+          if (inputs[j][0] == people[i + 1][0]) {
+            people[i + 1][1] = [chooseArray[0][0], inputs[j][1]];
+            break;
+          }
+        }
+
+        break;
+      }
     }
+
   }
 
-  logList("Final OutList:", out);
-  return out;
+  console.log(people);
+  return people;
+
+  return -1;
 }
 
-function sendEmails(santas) {
-  santas.forEach(function(item) {
-    console.log("Name given: " + item[0] + "; Email: " + item[1]);
-    //send name item[0] to email item[1]
-    var errorLabel = document.getElementById("error-label");
-    errorLabel.style.opacity = 1;
-    errorLabel.innerHTML = "Correlations logged in console";
-  });
 
+function makeEmptyArray() {
+  var form = document.getElementById("center-form");
+  var numPeople = getNumberOfPeople();
+  var arr = [];
+  for (var i = 0; i < numPeople; i++) {
+    arr.push([null, null]);
+  }
+  return arr;
+}
 
+function shuffle(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
 }
 
 

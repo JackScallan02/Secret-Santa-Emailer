@@ -1,0 +1,55 @@
+@import "style.css";
+
+html, body, main {
+  background-color: #ffaeab;
+}
+
+
+input {
+  border-radius: 5px;
+  border: 1px solid black;
+  width: 180px;
+  height: 30px;
+}
+
+button {
+  border: 1px solid black;
+  background-color: white;
+  width: 120px;
+  height: 35px;
+}
+
+p {
+  color: white;
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.2);
+  font-size: 25px;
+}
+
+
+
+.input-flex {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-div {
+  margin-left: -2.5%;
+  position: absolute;
+  top: 30%;
+  height: 10%;
+  width: 100%;
+}
+
+#account-already {
+  text-decoration: none;
+  font-size: 14px;
+  color: #2599db;
+  text-shadow: 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+#account-already:hover {
+  color: #2599db;
+  text-shadow: 1px 1px rgba(255, 255, 255, 0.3);
+}
