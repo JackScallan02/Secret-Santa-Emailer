@@ -10,6 +10,13 @@ var shark4Timer = null;
 var x;
 var y;
 let requestShark;
+var shark3Time = getRandomInt(15000, 30000);
+var shark4Time = getRandomInt(40000, 60000);
+var shark3TimeRemaining = shark3Time;
+var shark4TimeRemaining = shark4Time;
+var beginTime = Date.now();
+var timeElapsed = 0;
+
 
 
 
@@ -27,7 +34,6 @@ $(document).ready(function(){
     var lastYPos;
     var lastXPos;
     //For each shark that exists,
-    //console.log(gameLayer.children.length);
     for (var i = 0; i < gameLayer.children.length; i++) {
       lastYPos = gameLayer.children[i].getBoundingClientRect().top - $("#game-main").offset().top + 50;
       lastXPos = gameLayer.children[i].getBoundingClientRect().left - $("#game-main").offset().left;
@@ -48,7 +54,6 @@ $(document).ready(function(){
         x = e.pageX - $("#game-main").offset().left - 25;
         y = e.pageY - $("#game-main").offset().top - 20;
 
-        //console.log("Mouse position: ", x);
         if (playing) {
           if (x >= 0 && y >= 0 && y <= 400 && x <= 720) {
             $("#fish").css({
@@ -131,14 +136,17 @@ $(document).ready(function(){
   sendShark([1300, 1700], 1);
   sendShark([1100, 1400], 0.9);
 
+
   shark3Timer = setTimeout(function() {
     sendShark([1300, 1500], 0.7);
-  }, getRandomInt(15000, 30000));
+  }, shark3Time - timeElapsed);
+
+
 
 
   shark4Timer = setTimeout(function() {
     sendShark([1200, 1600], 0.6);
-  }, getRandomInt(40000, 60000));
+  }, shark4Time - timeElapsed);
 
 });
 
@@ -154,6 +162,10 @@ $(document).ready(function(){
            });
 
            cancelAnimationFrame(requestShark);
+
+           clearTimeout(shark3Timer);
+           clearTimeout(shark4Timer);
+           timeElapsed = Date.now() - beginTime;
 
            $("#game-main").css('cursor', 'auto');
            playing = false;
@@ -239,7 +251,7 @@ function sendShark(range, speed) {
     setTimeout(function(){
 
       if (playing) {
-          random = getRandomInt(120, 475);
+          random = getRandomInt(120, 450);
           $(shark).css({
             top: random,
           });
@@ -271,15 +283,19 @@ function sendShark(range, speed) {
             sharkPos = shark.getBoundingClientRect().left - $("#game-main").offset().left - 25;
             sharkPosY = random - 55;
 
-
-            if ((sharkPos < x && sharkPos > x - 10) && ((sharkPosY > y && sharkPosY < y + 10) || sharkPosY < y && sharkPosY > y - 10)) {
+            if ((sharkPos < x + 15 && sharkPos > x - 10) && ((sharkPosY > y && sharkPosY < y + 10) || sharkPosY < y && sharkPosY > y - 10)) {
               if (playing == true) {
                 clearInterval(interval2);
                 endGame();
               }
 
-
             }
+
+            if (playing == false) {
+              clearInterval(interval2);
+            }
+
+
           }, 1);
 
           window.requestAnimationFrame(requestShark);
@@ -306,7 +322,12 @@ function endGame() {
     deleteSharks();
     cancelAnimationFrame(requestShark);
 
-
+    beginTime = Date.now();
+    timeElapsed = 0;
+    shark3Time = getRandomInt(15000, 30000);
+    shark4Time = getRandomInt(40000, 60000);
+    shark3TimeRemaining = shark3Time;
+    shark4TimeRemaining = shark4Time;
 
     clearTimeout(shark3Timer);
     clearTimeout(shark4Timer);
