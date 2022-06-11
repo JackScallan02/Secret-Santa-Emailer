@@ -1,0 +1,238 @@
+@import "style.css";
+
+html, body, main {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-color: #ffaeab;
+}
+
+body {
+  overscroll-behavior-y: none;
+}
+
+li {
+  list-style-type: none;
+}
+
+#top-banner-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+}
+
+.banner-list-item {
+  float: right;
+  margin-left: 4%;
+  margin-right: 4%;
+  font-family: inder;
+
+}
+
+.banner-list-item:hover {
+  transform: scale(1.15);
+}
+
+#jackscallan-label {
+  float: left;
+}
+
+#jackscallan-label:hover {
+  transform: none;
+}
+
+.bottom-div {
+  position: relative;
+  width: 100%;
+  height: 5rem;
+  background-color: white;
+  border: 1px solid gray;
+  margin-top: 30px;
+
+}
+
+
+
+.bottom-div-flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+
+.bottom-image {
+  margin-top: 1%;
+  height: 75%;
+}
+
+
+/*..... Game CSS Begins.....*/
+
+
+
+
+#main-div {
+  position: absolute;
+  width: 60%;
+  min-width: 800px;
+  min-height: 500px;
+  max-width: 800px;
+  max-height: 500px;
+  left: 25%;
+  top: 20%;
+  height: 60%;
+  background-color: white;
+  border: 1px solid darkgray;
+  border-radius: 3px;
+}
+
+#play-game {
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 2px;
+  background-color: lightgreen;
+  color: white;
+  font-size: 18px;
+  text-shadow: #000 0px 0px 1.25px;
+  width: 25%;
+  height: 10%;
+  left: 37.5%;
+  top: 45%;
+  z-index: 1;
+}
+
+#play-game:hover {
+  width: 27%;
+  height: 11%;
+  left: 36.5%;
+  top: 44.5%;
+  font-size: 19px;
+}
+
+
+#game-banner {
+  position: absolute;
+  width: 100%;
+  height: 10%;
+  background-color: lightgray;
+  border-bottom: 1px solid darkgray;
+  z-index: 1;
+  padding: 0;
+
+}
+
+
+#points-text {
+  position: absolute;
+  left: 5%;
+  top: 25%;
+  font-size: 20px;
+}
+
+#air-time-text {
+  position: absolute;
+  right: 32%;
+  top: 25%;
+  font-size: 20px;
+
+}
+
+#air-time-container {
+  position: absolute;
+  width: 20%;
+  height: 80%;
+  top: 10%;
+  right: 10%;
+  border: 1px solid black;
+  border-radius: 5px;
+  overflow: hidden;
+
+}
+
+
+#air-time-bar {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #6bff7f;
+
+}
+
+#game-main {
+  position: absolute;
+  width: 100%;
+  top: 10%;
+  background-color: white;
+  height: 90%;
+  overflow: hidden;
+  background-color: white;
+}
+
+#fish {
+  position: absolute;
+  text-align: center;
+  width: 73px;
+  height: 44px;
+  top: 40%;
+  left: 5%;
+  background-image: url(images/fish1.png);
+  z-index: 1;
+}
+
+@keyframes slide {
+  0% {
+    transform: translate(0);
+  }
+  100% {
+    transform: translate(-800px); /* The image width */
+  }
+}
+
+@keyframes slide-bar {
+  0% {
+    transform: translate(0);
+  }
+  100% {
+    transform: translate(-200px); /* The image width */
+  }
+}
+
+@keyframes slide-bar-right {
+  0% {
+    transform: translate(-200px);
+  }
+  100% {
+    transform: translate(0); /* The image width */
+  }
+}
+
+
+@keyframes slide-shark {
+  0% {
+    transform: translate(0);
+  }
+
+  100% {
+    transform: translate(-1000px); /* The image width */
+  }
+}
+
+
+
+#background-div {
+  background: url("images/game-background.jpg") repeat-x;
+  width: 1600px;
+  height: 100%;
+}
+
+#game-layer {
+  width: 800px;
+  height: 500px;
+  opacity: 100;
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+
+}
