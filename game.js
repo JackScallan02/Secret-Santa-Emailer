@@ -1,8 +1,6 @@
 var playing = false;
 var points = 0;
-const pointsText = document.getElementById("points-text");
-const bar = document.getElementById("air-time-bar");
-let requestShark;
+
 var shark3Timer = null;
 var shark4Timer = null;
 var shark3Time = getRandomInt(15000, 30000);
@@ -11,11 +9,12 @@ var shark3TimeRemaining = shark3Time;
 var shark4TimeRemaining = shark4Time;
 var timeElapsed = 0;
 var beginTime;
-var x;
-var y;
+
 var gameStarted = false;
 var gameEnded = false;
-var sharkCount = 0;
+
+var x;
+var y;
 
 
 
@@ -33,10 +32,6 @@ $(document).ready(function(){
     $("#lose-div").fadeOut(300, function() {
       $("#lose-div").remove();
     });
-
-
-
-
 
 
     var gameLayer = document.getElementById("game-layer");
@@ -103,9 +98,6 @@ $(document).ready(function(){
           }
 
 
-
-          barX = bar.getBoundingClientRect().left;
-
           if (y <= 65 && barDecreasing == false) {
             $("#air-time-bar").stop();
             barDecreasing = true;
@@ -118,7 +110,6 @@ $(document).ready(function(){
             });
 
           } else if (y > 65 && barIncreasing == false) {
-            console.log("Here");
             $("#air-time-bar").stop();
             barIncreasing = true;
             barDecreasing = false;
@@ -127,7 +118,6 @@ $(document).ready(function(){
             });
 
           }
-
       }
 
     });
@@ -238,7 +228,7 @@ function endGame() {
     $("#play-game").fadeIn(); //Play game button comes back
     setTimeout(function () {
       $("#play-game").prop('disabled', false);
-      pointsText.innerHTML = "Points: 0";
+      $("#points-text").html("Points: 0")
       points = 0;
     }, 1000);
 
@@ -278,7 +268,7 @@ function createShark(speed) { //Use setinterval with sendShark2 invocation
   $(shark).bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function(e) {
     $(this).remove();
     points += 1;
-    pointsText.innerHTML = "Points: " + points;
+    $("#points-text").html("Points: " + points);
   });
 
   if (playing == false || gameEnded) {
