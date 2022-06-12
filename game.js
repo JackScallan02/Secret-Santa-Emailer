@@ -1,47 +1,49 @@
-//Play Game Button Animation
 var playing = false;
 var points = 0;
 const pointsText = document.getElementById("points-text");
 const bar = document.getElementById("air-time-bar");
 var aboveAir = false;
 var barFull = true;
+let requestShark;
 var shark3Timer = null;
 var shark4Timer = null;
-var x;
-var y;
-let requestShark;
 var shark3Time = getRandomInt(15000, 30000);
 var shark4Time = getRandomInt(40000, 60000);
 var shark3TimeRemaining = shark3Time;
 var shark4TimeRemaining = shark4Time;
-var beginTime = Date.now();
 var timeElapsed = 0;
-
+var beginTime;
+var x;
+var y;
+var gameStarted = false;
+var gameEnded = false;
+var sharkCount = 0;
 
 
 
 $(document).ready(function(){
   $("#play-game").click(function() {
-
+    if (gameStarted == false) {
+      beginTime = Date.now();
+      gameStarted = true;
+    }
     $(this).prop('disabled', true);
     $(this).fadeOut();
     $("#game-main").css('cursor', 'none');
     playing = true;
+    gameEnded = false;
+    $("#lose-div").fadeOut(300, function() {
+      $("#lose-div").remove();
+    });
+
+
+
 
     var gameLayer = document.getElementById("game-layer");
 
-
-    var lastYPos;
-    var lastXPos;
     //For each shark that exists,
     for (var i = 0; i < gameLayer.children.length; i++) {
-      lastYPos = gameLayer.children[i].getBoundingClientRect().top - $("#game-main").offset().top + 50;
-      lastXPos = gameLayer.children[i].getBoundingClientRect().left - $("#game-main").offset().left;
-      gameLayer.children[i].style.animation = "slide-shark 1s linear";
-      $("#game-layer").children().eq(i).bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function(e) { $(this).remove(); });
-      gameLayer.children[i].style.left = `${lastXPos}px`;
-      gameLayer.children[i].style.top = `${lastYPos}px`;
-
+      gameLayer.children[i].classList.toggle("paused");
     }
 
 
@@ -133,20 +135,18 @@ $(document).ready(function(){
   var random = getRandomInt(120, 490);
 
 
-  sendShark([1300, 1700], 1);
-  sendShark([1100, 1400], 0.9);
+  sendShark(1, [1000, 1800]);
+  sendShark(0.9, [1000, 1800]);
 
 
-  shark3Timer = setTimeout(function() {
-    sendShark([1300, 1500], 0.7);
+  var shark3Timer = setTimeout(function() {
+    sendShark(0.7, [1200, 2000]);
   }, shark3Time - timeElapsed);
 
-
-
-
-  shark4Timer = setTimeout(function() {
-    sendShark([1200, 1600], 0.6);
+  var shark4Timer = setTimeout(function() {
+    sendShark(0.6, [1400, 2200]);
   }, shark4Time - timeElapsed);
+
 
 });
 
@@ -154,14 +154,10 @@ $(document).ready(function(){
 
   $(document).on('keydown', function(event) {
     setTimeout(function (){
-
-
        if (event.key == "Escape" && playing == true) {
            $("#background-div").css({
              animation: "none"
            });
-
-           cancelAnimationFrame(requestShark);
 
            clearTimeout(shark3Timer);
            clearTimeout(shark4Timer);
@@ -173,24 +169,16 @@ $(document).ready(function(){
            setTimeout(function () {
              $("#play-game").prop('disabled', false);
            }, 1000);
-
            $("#play-game").html("Resume");
+
            $("#air-time-bar").stop();
 
            const gameLayer = document.getElementById("game-layer");
            const sharks = gameLayer.children;
 
-           var lastYPos;
-           var lastXPos;
 
            for (var i = 0; i < gameLayer.children.length; i++) {
-             lastYPos = gameLayer.children[i].getBoundingClientRect().top - $("#game-main").offset().top + 50;
-             lastXPos = gameLayer.children[i].getBoundingClientRect().left - $("#game-main").offset().left;
-
-             gameLayer.children[i].style.animation = "none";
-             gameLayer.children[i].style.left = `${lastXPos}px`;
-             gameLayer.children[i].style.top = `${lastYPos}px`;
-
+             gameLayer.children[i].classList.toggle("paused");
            }
 
        }
@@ -212,106 +200,9 @@ function deleteSharks() {
 
 
 
-
-
-
-function sendShark(range, speed) {
-  if (playing == false) {
-    return;
-  }
-
-  var gameLayer = document.getElementById("game-layer");
-
-  var shark = document.createElement("div");
-
-  $(shark).css({
-    width: "100px",
-    height: "35px",
-    position: "absolute",
-    backgroundImage: 'url(images/shark.png)',
-    backgroundSize: "cover",
-    left: 810,
-    top: random,
-    animation: "slide-shark " + speed + "s linear",
-    zIndex: 1,
-    opacity: 100
-  });
-
-  $(shark).bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function(e) { $(this).remove(); });
-
-  var variableTime;
-  var random;
-  var requestShark = function () {
-    if (playing == false) {
-      cancelAnimationFrame(requestShark);
-      return;
-    }
-
-    variableTime = getRandomInt(range[0], range[1]);
-    setTimeout(function(){
-
-      if (playing) {
-          random = getRandomInt(120, 450);
-          $(shark).css({
-            top: random,
-          });
-
-          gameLayer.appendChild(shark);
-
-          var sharkPos;
-          var sharkPosY;
-          var interval = setInterval(function() {
-
-            sharkPos = shark.getBoundingClientRect().left - $("#game-main").offset().left - 25;
-            sharkPosY = random - 50;
-
-
-            if (sharkPos <= 0) {
-              points += 1;
-              pointsText.innerHTML = "Points: " + points;
-              clearInterval(interval);
-
-            }
-
-            if (playing == false) {
-              clearInterval(interval);
-            }
-
-          }, 10);
-
-          var interval2 = setInterval(function() {
-            sharkPos = shark.getBoundingClientRect().left - $("#game-main").offset().left - 25;
-            sharkPosY = random - 55;
-
-            if ((sharkPos < x + 15 && sharkPos > x - 10) && ((sharkPosY > y && sharkPosY < y + 10) || sharkPosY < y && sharkPosY > y - 10)) {
-              if (playing == true) {
-                clearInterval(interval2);
-                endGame();
-              }
-
-            }
-
-            if (playing == false) {
-              clearInterval(interval2);
-            }
-
-
-          }, 1);
-
-          window.requestAnimationFrame(requestShark);
-       }
-    }, variableTime)
-  };
-
-
-  window.requestAnimationFrame(requestShark);
-
-
-}
-
-
-
 function endGame() {
+  gameEnded = true;
+  gameStarted = false;
   if (barFull == false) {
     $("#air-time-bar").stop();
     $("#air-time-bar").animate({width:'toggle'},1500);
@@ -320,17 +211,20 @@ function endGame() {
     barFull = true;
     aboveAir = false;
     deleteSharks();
-    cancelAnimationFrame(requestShark);
 
-    beginTime = Date.now();
+
     timeElapsed = 0;
+
+    clearTimeout(shark3Timer);
+    clearTimeout(shark4Timer);
+
     shark3Time = getRandomInt(15000, 30000);
     shark4Time = getRandomInt(40000, 60000);
     shark3TimeRemaining = shark3Time;
     shark4TimeRemaining = shark4Time;
 
-    clearTimeout(shark3Timer);
-    clearTimeout(shark4Timer);
+
+
 
     $("#background-div").css({
       animation: "none"
@@ -348,4 +242,89 @@ function endGame() {
       pointsText.innerHTML = "Points: 0";
       points = 0;
     }, 1000);
+
+
+    $("<div/>", {
+      text: "You Lose!",
+      id: "lose-div"
+    }).appendTo("#main-div").hide().fadeIn(1000);
+
+    $("<div/>", {
+      id: "score-div",
+      text: "Score: " + points,
+
+    }).appendTo("#lose-div")
+
+
+}
+
+
+function createShark(speed) { //Use setinterval with sendShark2 invocation
+  var gameLayer = document.getElementById("game-layer");
+  var shark = document.createElement("div");
+  var sharkPosY = getRandomInt(120, 450);
+  $(shark).css({
+    width: "100px",
+    height: "35px",
+    position: "absolute",
+    backgroundImage: 'url(images/shark.png)',
+    backgroundSize: "cover",
+    left: 810,
+    top: sharkPosY,
+    animation: "slide-shark " + speed + "s linear",
+    zIndex: 1,
+    opacity: 100
+  });
+
+  $(shark).bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function(e) {
+    $(this).remove();
+    points += 1;
+    pointsText.innerHTML = "Points: " + points;
+  });
+
+  if (playing == false || gameEnded) {
+    return;
+  }
+
+  gameLayer.appendChild(shark);
+
+  var sharkPosX;
+  sharkPosY -= 50;
+
+  var interval = setInterval(function() {
+    sharkPosX = shark.getBoundingClientRect().left - $("#game-main").offset().left - 25;
+
+    if ((sharkPosX < x + 15 && sharkPosX > x - 10) && ((sharkPosY > y && sharkPosY < y + 10) || sharkPosY < y && sharkPosY > y - 10)) {
+      endGame();
+      clearInterval(interval);
+      return;
+    }
+
+    if (gameEnded) {
+      clearInterval(interval);
+      return;
+    }
+
+    if (sharkPosX <= 0 && playing) {
+      clearInterval(interval);
+      return;
+    }
+
+  }, 5);
+
+}
+
+
+function sendShark(speed, timeArray) {
+  var timeRange = getRandomInt(timeArray[0], timeArray[1]);
+  var send = function() {
+    createShark(speed);
+    timeRange = getRandomInt(timeArray[0], timeArray[1]);
+    if (playing && gameEnded == false) {
+      setTimeout(send, timeRange);
+    } else {
+      return;
+    }
+  }
+  setTimeout(send, timeRange);
 }
