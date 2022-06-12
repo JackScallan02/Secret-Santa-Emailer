@@ -2,8 +2,6 @@ var playing = false;
 var points = 0;
 const pointsText = document.getElementById("points-text");
 const bar = document.getElementById("air-time-bar");
-var aboveAir = false;
-var barFull = true;
 let requestShark;
 var shark3Timer = null;
 var shark4Timer = null;
@@ -39,6 +37,8 @@ $(document).ready(function(){
 
 
 
+
+
     var gameLayer = document.getElementById("game-layer");
 
     //For each shark that exists,
@@ -51,6 +51,8 @@ $(document).ready(function(){
       animation: "slide 3s linear infinite"
     });
 
+    var barIncreasing = false;
+    var barDecreasing = false;
 
     $(document).mousemove(function(e) {
         x = e.pageX - $("#game-main").offset().left - 25;
@@ -104,28 +106,28 @@ $(document).ready(function(){
 
           barX = bar.getBoundingClientRect().left;
 
-          if (y <= 65 && aboveAir == false) {
-            aboveAir = true;
+          if (y <= 65 && barDecreasing == false) {
             $("#air-time-bar").stop();
-
-            $("#air-time-bar").animate({width:'toggle'},1500, function() {
+            barDecreasing = true;
+            barIncreasing = false;
+            $("#air-time-bar").animate({width:'0%'},1500, function() {
               //If animation completes:
-              barFull = false;
               if (playing == true) {
                 endGame();
               }
-
-
             });
 
-          } else if (y > 65 && aboveAir == true) {
-            aboveAir = false;
+          } else if (y > 65 && barIncreasing == false) {
+            console.log("Here");
             $("#air-time-bar").stop();
-            $("#air-time-bar").animate({width:'toggle'},1500, function() {
-              barFull = true;
+            barIncreasing = true;
+            barDecreasing = false;
+            $("#air-time-bar").animate({width:'100%'},1500, function() {
+              barIncreasing = false;
             });
 
           }
+
       }
 
     });
@@ -203,13 +205,10 @@ function deleteSharks() {
 function endGame() {
   gameEnded = true;
   gameStarted = false;
-  if (barFull == false) {
-    $("#air-time-bar").stop();
-    $("#air-time-bar").animate({width:'toggle'},1500);
-    }
 
-    barFull = true;
-    aboveAir = false;
+  $("#air-time-bar").stop();
+  $("#air-time-bar").animate({width:'100%'},1500);
+
     deleteSharks();
 
 
