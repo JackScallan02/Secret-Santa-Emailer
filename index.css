@@ -248,3 +248,14 @@ li {
   border: 1px solid #383838;
   border-radius: 5px;
 }
+
+#py-button {
+  border: none;
+  background-color: white;
+  margin-top: 5%;
+  color: gray;
+}
+
+#py-button:hover {
+  color: black;
+}

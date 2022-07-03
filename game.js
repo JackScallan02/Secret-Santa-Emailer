@@ -1,5 +1,6 @@
 var playing = false;
 var points = 0;
+var totalPoints = 0;
 
 var shark3Timer = null;
 var shark4Timer = null;
@@ -12,11 +13,8 @@ var beginTime;
 
 var gameStarted = false;
 var gameEnded = false;
-
-var x;
-var y;
-
-
+var fishPosX = document.getElementById("fish").getBoundingClientRect().left - $("#game-main").offset().left + 25;
+var fishPosY = document.getElementById("fish").getBoundingClientRect().top - $("#game-main").offset().top + 20;
 
 $(document).ready(function(){
   $("#play-game").click(function() {
@@ -53,48 +51,65 @@ $(document).ready(function(){
         x = e.pageX - $("#game-main").offset().left - 25;
         y = e.pageY - $("#game-main").offset().top - 20;
 
+
         if (playing) {
           if (x >= 0 && y >= 0 && y <= 400 && x <= 720) {
             $("#fish").css({
               left: x,
               top: y,
             });
+            fishPosX = x;
+            fishPosY = y;
           } else if (x < 0 && y > 0 && y <= 400) {
             $("#fish").css({
               left: 0,
               top: y,
             });
+            fishPosX = 0;
+            fishPosY = y;
 
           } else if (x > 0 && y < 0 && x <= 720) {
             $("#fish").css({
               left: x,
               top: 0,
             });
+            fishPosX = x;
+            fishPosY = 0;
           } else if (x < 0 && y < 0) {
             $("#fish").css({
               left: 0,
               top: 0,
             });
+            fishPosX = 0;
+            fishPosY = 0;
           } else if (x > 0 && y > 400 && x < 720) {
             $("#fish").css({
               left: x,
               top: 400,
             });
+            fishPosX = x;
+            fishPosY = 400;
           } else if (x < 0 && y > 400) {
             $("#fish").css({
               left: 0,
               top: 400,
             });
+            fishPosX = 0;
+            fishPosY = 400;
           } else if (x > 720 && y > 0 && y < 400) {
             $("#fish").css({
               left: 720,
               top: y
             });
+            fishPosX = 720;
+            fishPosY = y;
           } else if (x > 720 && y > 400) {
             $("#fish").css({
               left: 720,
               top: 400,
             });
+            fishPosX = 720;
+            fishPosY = 400;
           }
 
 
@@ -229,6 +244,8 @@ function endGame() {
     setTimeout(function () {
       $("#play-game").prop('disabled', false);
       $("#points-text").html("Points: 0")
+      totalPoints += points;
+      $("#total-points-text").html("Available points: " + totalPoints);
       points = 0;
     }, 1000);
 
@@ -283,7 +300,9 @@ function createShark(speed) { //Use setinterval with sendShark2 invocation
   var interval = setInterval(function() {
     sharkPosX = shark.getBoundingClientRect().left - $("#game-main").offset().left - 25;
 
-    if ((sharkPosX < x + 15 && sharkPosX > x - 10) && ((sharkPosY > y && sharkPosY < y + 10) || sharkPosY < y && sharkPosY > y - 10)) {
+
+    if ((sharkPosX < fishPosX + 15 && sharkPosX > fishPosX - 10) && ((sharkPosY > fishPosY && sharkPosY < fishPosY + 10) || sharkPosY < fishPosY && sharkPosY > fishPosY - 10)) {
+      console.log("Collision at: " + sharkPosX + ", " + sharkPosY);
       endGame();
       clearInterval(interval);
       return;

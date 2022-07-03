@@ -21,3 +21,10 @@ function addScrollEvent(button, scrollValue) {
     })
   });
 }
+
+$("#py-button").click(function() {
+  $.ajax({
+    url: "test.py",
+    context: document.body
+  })
+});
