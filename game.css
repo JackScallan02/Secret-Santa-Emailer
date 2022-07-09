@@ -139,6 +139,14 @@ li {
   font-size: 20px;
 }
 
+.heart-img {
+  position: relative;
+  left: 25%;
+  height: 80%;
+  top: 10%;
+  opacity: 0;
+}
+
 #air-time-text {
   position: absolute;
   right: 32%;
@@ -292,10 +300,11 @@ li {
 #shop {
   background-color: white;
   width: 25%;
-  height: 100%;
+  height: 75%;
   min-width: 200px;
   position: absolute;
   right: 50px;
+  overflow-y: scroll;
 }
 
 #shop-header-text {
@@ -362,4 +371,27 @@ li {
   position: absolute;
   top: 25%;
   left: 5%;
+}
+
+#desc-div {
+  height: 25%;
+  bottom: 0px;
+  width: 25%;
+  min-width: 200px;
+  position: absolute;
+  right: 50px;
+  background: white;
+  border-top: 1px solid darkgray;
+}
+
+
+#desc-text {
+  position: relative;
+  left: 5%;
+  top: 2.5%;
+  font-size: 15px;
+  height: 97.5%;
+  white-space: pre-line;
+  overflow: hidden;
+  width: 95%;
 }

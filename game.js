@@ -11,6 +11,7 @@ var shark4TimeRemaining = shark4Time;
 var timeElapsed = 0;
 var beginTime;
 var equippedFish = "#harold-button";
+var numLives = 2;
 
 var gameStarted = false;
 var gameEnded = false;
@@ -20,8 +21,16 @@ var fishPosY = document.getElementById("fish").getBoundingClientRect().top - $("
 $(document).ready(function(){
   $("#play-game").click(function() {
     if (gameStarted == false) {
+
       beginTime = Date.now();
+      timeElapsed = 0;
       gameStarted = true;
+      if (equippedFish == "#buy-sigma") {
+        $(".heart-img").fadeIn();
+        $(".heart-img").css('opacity', '100');
+        numLives = 2;
+      }
+
     }
     $(this).prop('disabled', true);
     $(this).fadeOut();
@@ -40,9 +49,17 @@ $(document).ready(function(){
       gameLayer.children[i].classList.toggle("paused");
     }
 
+    var animationSpd;
 
+    switch(equippedFish) {
+      case "#buy-chrig":
+        animationSpd = "2.25";
+        break;
+      default:
+        animationSpd = "3";
+    }
     $("#background-div").css({
-      animation: "slide 3s linear infinite"
+      animation: "slide " + animationSpd + "s linear infinite"
     });
 
     var barIncreasing = false;
@@ -142,24 +159,49 @@ $(document).ready(function(){
     var gameLayer = document.getElementById("game-layer");
     var random = getRandomInt(120, 490);
 
+    var shark1Speed;
+    var shark2Speed;
+    var shark3Speed;
+    var shark4Speed;
 
-    sendShark(1, [1000, 1800]);
-    sendShark(0.9, [1000, 1800]);
+
+    switch (equippedFish) {
+      case "#buy-chrig":
+        shark1Speed = 0.9;
+        shark2Speed = 0.8;
+        shark3Speed = 0.65;
+        shark4Speed = 0.5;
+        break;
+      case "#buy-lulu":
+        shark1Speed = 1.3;
+        shark2Speed = 1.15;
+        shark3Speed = 0.9;
+        shark4Speed = 0.8;
+      default:
+        shark1Speed = 1;
+        shark2Speed = 0.9;
+        shark3Speed = 0.7;
+        shark4Speed = 0.6;
+    }
 
 
-    var shark3Timer = setTimeout(function() {
-      sendShark(0.7, [1200, 2000]);
+
+    sendShark(shark1Speed, [1000, 1800]);
+    sendShark(shark2Speed, [1000, 1800]);
+
+    shark3Timer = setTimeout(function() {
+      sendShark(shark3Speed, [1200, 2000]);
     }, shark3Time - timeElapsed);
 
-    var shark4Timer = setTimeout(function() {
-      sendShark(0.6, [1400, 2200]);
+    shark4Timer = setTimeout(function() {
+      sendShark(shark4Speed, [1400, 2200]);
     }, shark4Time - timeElapsed);
 
 
   });
 
 
-
+  //On pause
   $(document).on('keydown', function(event) {
     setTimeout(function (){
        if (event.key == "Escape" && playing == true) {
@@ -169,6 +211,8 @@ $(document).ready(function(){
 
            clearTimeout(shark3Timer);
            clearTimeout(shark4Timer);
+           shark3Timer = null;
+           shark4Timer = null;
            timeElapsed = Date.now() - beginTime;
 
            $("#game-main").css('cursor', 'auto');
@@ -198,11 +242,30 @@ $(document).ready(function(){
        cursor: "pointer",
        fontSize: "20px"
      });
+     switch(this.id) {
+       case "harold":
+          $("#desc-text").html("The basic fish. Nothing much to say...");
+          break;
+       case "jeff":
+          $("#desc-text").html("This is jeff. Same as harold, but looks cooler.");
+          break;
+       case "sigma":
+          $("#desc-text").html("Has an ego. Rightly so. Sigma has 2 lives.");
+          break;
+       case "lulu":
+          $("#desc-text").html("Lulu is so attractive she slows the sharks down so they can get a closer look.");
+          break;
+       case "chrig":
+          $("#desc-text").html("Creeps everyone out (including sharks), absurdly decreasing its' hitbox. Due to high anxiety, Chrig swims faster.");
+
+     }
+     //$("#desc-text").html("This is a fish description.");
    }, function() {
      $(this).css({
        cursor: "default",
        fontSize: "18px"
      });
+     $("#desc-text").html("");
    });
 
 
@@ -213,12 +276,16 @@ $(document).ready(function(){
   $("#harold-button").click(function() {
     if (equippedFish != "#harold-button") {
       $(equippedFish).html("Equip");
+      if (equippedFish == "#buy-sigma") {
+        $(".heart-img").css('opacity', '0');
+      }
       equippedFish = "#harold-button"
       $("#fish").css({
         background: "url(images/fish1.png) no-repeat",
         backgroundSize: "contain"
       });
       $("#harold-button").html("Equipped");
+
     }
   });
 
@@ -234,18 +301,20 @@ $(document).ready(function(){
     if (buyFish("#buy-sigma", 50, sigmaOwned, "fish3")) {
       sigmaOwned = true;
     }
+
+
   });
 
   var luluOwned = false;
   $("#buy-lulu").click(function() {
-    if (buyFish("#buy-lulu", 100, sigmaOwned, "fish4")) {
+    if (buyFish("#buy-lulu", 100, luluOwned, "fish4")) {
       luluOwned = true;
     }
   });
 
   var chrigOwned = false;
   $("#buy-chrig").click(function() {
-    if (buyFish("#buy-chrig", 150, chrigOwned, "fish4")) {
+    if (buyFish("#buy-chrig", 150, chrigOwned, "fish5")) {
       chrigOwned = true;
     }
   });
@@ -282,6 +351,8 @@ function endGame() {
 
     clearTimeout(shark3Timer);
     clearTimeout(shark4Timer);
+    shark3Timer = null;
+    shark4Timer = null;
 
     shark3Time = getRandomInt(15000, 30000);
     shark4Time = getRandomInt(40000, 60000);
@@ -331,8 +402,8 @@ function createShark(speed) { //Use setinterval with sendShark2 invocation
   var shark = document.createElement("div");
   var sharkPosY = getRandomInt(120, 450);
   $(shark).css({
-    width: "100px",
-    height: "35px",
+    width: "150px",
+    height: "60px",
     position: "absolute",
     backgroundImage: 'url(images/shark.png)',
     backgroundSize: "cover",
@@ -358,18 +429,46 @@ function createShark(speed) { //Use setinterval with sendShark2 invocation
   var sharkPosX;
   sharkPosY -= 50;
 
+  var hitBoxX = 25;
+  var hitBoxY = 17.5;
+  var hit = true;
+
   var interval = setInterval(function() {
     sharkPosX = shark.getBoundingClientRect().left - $("#game-main").offset().left - 25;
 
-
-    if ((sharkPosX < fishPosX + 15 && sharkPosX > fishPosX - 10) && ((sharkPosY > fishPosY && sharkPosY < fishPosY + 10) || sharkPosY < fishPosY && sharkPosY > fishPosY - 10)) {
-      console.log("Collision at: " + sharkPosX + ", " + sharkPosY);
-      endGame();
-      clearInterval(interval);
-      return;
+    hitBoxX = 25;
+    hitBoxY = 17.5;
+    if (equippedFish == "#buy-chrig") { //If fish chrig is being used
+      hitBoxX = 10;
+      hitBoxY = 13.5;
     }
 
-    if (gameEnded) {
+    if ((sharkPosX < fishPosX + hitBoxX + 10 && sharkPosX > fishPosX - hitBoxX) &&
+    ((sharkPosY > fishPosY && sharkPosY + 15 < fishPosY + hitBoxY) ||
+    sharkPosY < fishPosY && sharkPosY + 15 > fishPosY - hitBoxY)) {
+      //15 is added to the Y coords because shark mouth is below the center
+
+      //console.log("Collision at: " + sharkPosX + ", " + sharkPosY);
+      if (equippedFish == "#buy-sigma" && numLives > 1) {
+        numLives -= 1;
+        $("#heart2").fadeOut();
+        hit = false;
+        setTimeout(function() {
+          hit = true;
+        }, 1000);
+      } else if (equippedFish == "#buy-sigma" && hit == true) {
+        $("#heart1").fadeOut();
+        endGame();
+        clearInterval(interval);
+        return;
+      } else if (equippedFish != "#buy-sigma") {
+        endGame();
+        clearInterval(interval);
+        return;
+      }
+    }
+
+    if (gameEnded || !playing) {
       clearInterval(interval);
       return;
     }
@@ -388,6 +487,7 @@ function sendShark(speed, timeArray) {
   var timeRange = getRandomInt(timeArray[0], timeArray[1]);
   var send = function() {
     createShark(speed);
+
     timeRange = getRandomInt(timeArray[0], timeArray[1]);
     if (playing && gameEnded == false) {
       setTimeout(send, timeRange);
@@ -419,6 +519,13 @@ function buyFish(id, cost, fishOwned, image) {
     $(equippedFish).html("Equip");
     $(id).html("Equipped");
     equippedFish = id;
+    if (equippedFish == "#buy-sigma") {
+      $(".heart-img").css('opacity', '100');
+      $("#heart1").fadeIn();
+      $("#heart2").fadeIn();
+    } else {
+      $(".heart-img").css('opacity', '0');
+    }
   }
   return bought;
 
