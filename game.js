@@ -10,6 +10,7 @@ var shark3TimeRemaining = shark3Time;
 var shark4TimeRemaining = shark4Time;
 var timeElapsed = 0;
 var beginTime;
+var equippedFish = "#harold-button";
 
 var gameStarted = false;
 var gameEnded = false;
@@ -192,16 +193,66 @@ $(document).ready(function(){
      }, 100);
    });
 
-
-   $(".fish-label").click(function() {
-     $("#harold").parent().css('background', '#b0ffb0');
-     setTimeout(function() {
-       $("#harold").parent().css('background', 'none');
-     }, 70);
+   $(".fish-label").hover(function() {
+     $(this).css({
+       cursor: "pointer",
+       fontSize: "20px"
+     });
+   }, function() {
+     $(this).css({
+       cursor: "default",
+       fontSize: "18px"
+     });
    });
 
 
-});
+
+//Fish Shop
+
+  haroldOwned = true;
+  $("#harold-button").click(function() {
+    if (equippedFish != "#harold-button") {
+      $(equippedFish).html("Equip");
+      equippedFish = "#harold-button"
+      $("#fish").css({
+        background: "url(images/fish1.png) no-repeat",
+        backgroundSize: "contain"
+      });
+      $("#harold-button").html("Equipped");
+    }
+  });
+
+  jeffOwned = false;
+  $("#buy-jeff").click(function() {
+    if (buyFish("#buy-jeff", 30, jeffOwned, "fish2")) {
+      jeffOwned = true;
+    }
+  });
+
+  sigmaOwned = false;
+  $("#buy-sigma").click(function() {
+    if (buyFish("#buy-sigma", 50, sigmaOwned, "fish3")) {
+      sigmaOwned = true;
+    }
+  });
+
+  var luluOwned = false;
+  $("#buy-lulu").click(function() {
+    if (buyFish("#buy-lulu", 100, sigmaOwned, "fish4")) {
+      luluOwned = true;
+    }
+  });
+
+  var chrigOwned = false;
+  $("#buy-chrig").click(function() {
+    if (buyFish("#buy-chrig", 150, chrigOwned, "fish4")) {
+      chrigOwned = true;
+    }
+  });
+
+
+
+}); //End document.ready
 
 
 function getRandomInt(min, max) {
@@ -345,4 +396,30 @@ function sendShark(speed, timeArray) {
     }
   }
   setTimeout(send, timeRange);
+}
+
+
+function buyFish(id, cost, fishOwned, image) {
+  var bought = false;
+  if (fishOwned) {
+    bought = true;
+  }
+  if (!fishOwned && totalPoints >= cost) {
+    bought = true;
+    totalPoints -= cost;
+    $("#total-points-text").html("Available points: " + totalPoints);
+    $(id).html("Equip");
+
+  } else if (fishOwned) {
+
+    $("#fish").css({
+      background: "url(images/" + image + ".png) no-repeat",
+      backgroundSize: "contain"
+    });
+    $(equippedFish).html("Equip");
+    $(id).html("Equipped");
+    equippedFish = id;
+  }
+  return bought;
+
 }
