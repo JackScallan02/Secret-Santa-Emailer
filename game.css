@@ -345,6 +345,12 @@ li {
 
 }
 
+.fish-label:hover {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+
 .buy-button {
   margin: 5px 15px 5px 15px;
   background: white;

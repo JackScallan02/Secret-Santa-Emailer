@@ -138,24 +138,24 @@ $(document).ready(function(){
     });
 
 
-  var gameLayer = document.getElementById("game-layer");
-  var random = getRandomInt(120, 490);
+    var gameLayer = document.getElementById("game-layer");
+    var random = getRandomInt(120, 490);
 
 
-  sendShark(1, [1000, 1800]);
-  sendShark(0.9, [1000, 1800]);
+    sendShark(1, [1000, 1800]);
+    sendShark(0.9, [1000, 1800]);
 
 
-  var shark3Timer = setTimeout(function() {
-    sendShark(0.7, [1200, 2000]);
-  }, shark3Time - timeElapsed);
+    var shark3Timer = setTimeout(function() {
+      sendShark(0.7, [1200, 2000]);
+    }, shark3Time - timeElapsed);
 
-  var shark4Timer = setTimeout(function() {
-    sendShark(0.6, [1400, 2200]);
-  }, shark4Time - timeElapsed);
+    var shark4Timer = setTimeout(function() {
+      sendShark(0.6, [1400, 2200]);
+    }, shark4Time - timeElapsed);
 
 
-});
+  });
 
 
 
@@ -191,6 +191,16 @@ $(document).ready(function(){
        }
      }, 100);
    });
+
+
+   $(".fish-label").click(function() {
+     $("#harold").parent().css('background', '#b0ffb0');
+     setTimeout(function() {
+       $("#harold").parent().css('background', 'none');
+     }, 70);
+   });
+
+
 });
 
 
