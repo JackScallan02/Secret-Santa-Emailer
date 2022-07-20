@@ -1,2 +1,2 @@
 # my-website
- This website shows off my experience with HTML, CSS, and Javascript.
+ This website shows off my experience with HTML, CSS, Javascript, and JQuery.
