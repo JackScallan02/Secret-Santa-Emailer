@@ -12,6 +12,7 @@ var timeElapsed = 0;
 var beginTime;
 var equippedFish = "#harold-button";
 var numLives = 2;
+var audio = new Audio('audios/fish-song.mp3');
 
 var gameStarted = false;
 var gameEnded = false;
@@ -21,7 +22,6 @@ var fishPosY = document.getElementById("fish").getBoundingClientRect().top - $("
 $(document).ready(function(){
   $("#play-game").click(function() {
     if (gameStarted == false) {
-
       beginTime = Date.now();
       timeElapsed = 0;
       gameStarted = true;
@@ -32,6 +32,7 @@ $(document).ready(function(){
       }
 
     }
+    audio.play();
     $(this).prop('disabled', true);
     $(this).fadeOut();
     $("#game-main").css('cursor', 'none');
@@ -177,6 +178,7 @@ $(document).ready(function(){
         shark2Speed = 1.15;
         shark3Speed = 0.9;
         shark4Speed = 0.8;
+        break;
       default:
         shark1Speed = 1;
         shark2Speed = 0.9;
@@ -208,7 +210,7 @@ $(document).ready(function(){
            $("#background-div").css({
              animation: "none"
            });
-
+           audio.pause();
            clearTimeout(shark3Timer);
            clearTimeout(shark4Timer);
            shark3Timer = null;
@@ -250,7 +252,7 @@ $(document).ready(function(){
           $("#desc-text").html("This is jeff. Same as harold, but looks cooler.");
           break;
        case "sigma":
-          $("#desc-text").html("Has an ego. Rightly so. Sigma has 2 lives.");
+          $("#desc-text").html("Has a large ego. Rightly so. Sigma has 2 lives.");
           break;
        case "lulu":
           $("#desc-text").html("Lulu is so attractive she slows the sharks down so they can get a closer look.");
@@ -345,6 +347,8 @@ function endGame() {
   $("#air-time-bar").animate({width:'100%'},1500);
 
     deleteSharks();
+    audio.pause();
+    audio.currentTime = 0;
 
 
     timeElapsed = 0;
@@ -402,7 +406,7 @@ function createShark(speed) { //Use setinterval with sendShark2 invocation
   var shark = document.createElement("div");
   var sharkPosY = getRandomInt(120, 450);
   $(shark).css({
-    width: "150px",
+    width: "170px",
     height: "60px",
     position: "absolute",
     backgroundImage: 'url(images/shark.png)',
@@ -440,7 +444,7 @@ function createShark(speed) { //Use setinterval with sendShark2 invocation
     hitBoxY = 17.5;
     if (equippedFish == "#buy-chrig") { //If fish chrig is being used
       hitBoxX = 10;
-      hitBoxY = 13.5;
+      hitBoxY = 7.5;
     }
 
     if ((sharkPosX < fishPosX + hitBoxX + 10 && sharkPosX > fishPosX - hitBoxX) &&
@@ -478,7 +482,7 @@ function createShark(speed) { //Use setinterval with sendShark2 invocation
       return;
     }
 
-  }, 5);
+  }, 10);
 
 }
 
@@ -530,3 +534,9 @@ function buyFish(id, cost, fishOwned, image) {
   return bought;
 
 }
+
+
+audio.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+}, false);
