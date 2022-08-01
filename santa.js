@@ -5,6 +5,7 @@ window.onload = function() {
     }
 }
 
+
 function addPerson() { //Adds a div with 1 input into the form
   errorLabel = document.getElementById("error-label");
   errorLabel.style.opacity = 0;
@@ -28,6 +29,7 @@ function addPerson() { //Adds a div with 1 input into the form
   form.appendChild(div1);
 }
 
+
 function getNumberOfPeople() {
   var form = document.getElementById("center-form");
   var total = 0;
@@ -39,10 +41,12 @@ function getNumberOfPeople() {
   return total;
 }
 
+
 function getNumberOfInputs() {
   var form = document.getElementById("center-form");
   return form.length/2;
 }
+
 
 
 function displayError() {
@@ -50,6 +54,8 @@ function displayError() {
   errorLabel.style.opacity = 1;
   errorLabel.innerHTML = "You must have at least 3 people!";
 }
+
+
 
 function removePerson() {
   var numPeople = getNumberOfPeople();
@@ -63,13 +69,14 @@ function removePerson() {
   }
 }
 
+
 function repeatedNames() {
     var inputs = enumerateInputs();
     var found = new Set();
     for (var i = 0; i < inputs.length; i++) {
-	if (found.has(inputs[i][0])) {
-		return true;
-	}
+	  if (found.has(inputs[i][0])) {
+		    return true;
+	  }
         found.add(inputs[i][0])
     }
     return false;
@@ -77,8 +84,8 @@ function repeatedNames() {
 
 var submitButton = document.getElementById("submit-button");
 submitButton.addEventListener("click", function() {
- 
-  var numPeople = getNumberOfPeople();
+
+ var numPeople = getNumberOfPeople();
  if (numPeople < 3) {
     displayError();
     return;
@@ -87,16 +94,16 @@ submitButton.addEventListener("click", function() {
  if (repeatedNames() == true) {
     $("#error-label").css('opacity', '1');
     $("#error-label").html('You cannot have repeated names');
-    return; 
+    return;
 }
 
   var inputs = enumerateInputs();
   var pairs = createSantas(inputs);
 
-
   callPHP(pairs);
 
 });
+
 
 function enumerateInputs() {
   var form = document.getElementById("center-form");
@@ -142,11 +149,10 @@ function createSantas(inputs) {
       randomIndex = getRandomInt(0, chooseArray.length - 1);
       if (people[i][0] == chooseArray[randomIndex][0] && chooseArray.length == 1) {
       	  createSantas(inputs);
-	  return;
+	        return;
       }
     }
 
-    //console.log(people[i][0]);
     for (var j = 0; j < inputs.length; j++) {
       if (inputs[j][0] == people[i][0]) {
         people[i][1] = [chooseArray[randomIndex][0], inputs[j][1]];
@@ -166,17 +172,14 @@ function createSantas(inputs) {
             break;
           }
         }
-
         break;
       }
     }
 
   }
 
-  //console.log(people);
   return people;
 
-  return -1;
 }
 
 
@@ -189,6 +192,7 @@ function makeEmptyArray() {
   }
   return arr;
 }
+
 
 function shuffle(array) {
     for (var i = array.length - 1; i > 0; i--) {
@@ -206,6 +210,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+
 function logList(str, li) {
   console.log(str);
   li.forEach(function(item) {
@@ -216,44 +221,30 @@ function logList(str, li) {
 
 
 function callPHP(pairs) {
-  
-/*  var httpc = new XMLHttpRequest();
-  var url = "test.php"
-  httpc.open("GET", url, true);
-
-  httpc.onreadystatechange = function() { //Call a function when the state changes.
-    if(httpc.readyState == 4 && httpc.status == 200) { // complete and no errors
-        alert(httpc.responseText); 
-    }
-  };
-  httpc.send(pairs);
-*/
 
     dataToSend = new Array();
     var jsonArg = new Object();
 
-    for(var i = 0; i < pairs.length; i++) {
-    	jsonArg.key = pairs[i][0];
-        jsonArg.value = pairs[i][1];
-        dataToSend.push(jsonArg);
-	jsonArg = new Object();
+    for (var i = 0; i < pairs.length; i++) {
+      jsonArg.key = pairs[i][0];
+      jsonArg.value = pairs[i][1];
+      dataToSend.push(jsonArg);
+	    jsonArg = new Object();
     }
-   // console.log(dataToSend);
 
     $.ajax({
         url: "send-emails.php",
         data: {myData: dataToSend},
-	type: "POST",
-	success: function(response) {
-	    if (response.substring(response.length - 2, response.length) != "-1") {
-		window.location.href = 'successpage.html';
-		$("#submit-button").prop("disabled", "true");
-	    } else {
-		console.log("Failed to send emails");
-		$("#error-label").html("Invalid Email(s). Please check the emails and try again.");
-		$("#error-label").css("opacity", "1");
-	    }
-	}
-	
-    });
+        type: "POST",
+	      success: function(response) {
+	      if (response.substring(response.length - 2, response.length) != "-1") {
+		        window.location.href = 'successpage.html';
+		        $("#submit-button").prop("disabled", "true");
+	      } else {
+		        console.log("Failed to send emails");
+		        $("#error-label").html("Invalid Email(s). Please check the emails and try again.");
+		        $("#error-label").css("opacity", "1");
+	      }
+	 }
+  });
 }
