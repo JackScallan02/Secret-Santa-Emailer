@@ -1,4 +1,9 @@
-
+window.onload = function() {
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
+}
 
 function addPerson() { //Adds a div with 1 input into the form
   errorLabel = document.getElementById("error-label");
@@ -58,18 +63,38 @@ function removePerson() {
   }
 }
 
-
+function repeatedNames() {
+    var inputs = enumerateInputs();
+    var found = new Set();
+    for (var i = 0; i < inputs.length; i++) {
+	if (found.has(inputs[i][0])) {
+		return true;
+	}
+        found.add(inputs[i][0])
+    }
+    return false;
+}
 
 var submitButton = document.getElementById("submit-button");
 submitButton.addEventListener("click", function() {
+ 
   var numPeople = getNumberOfPeople();
-  if (numPeople < 3) {
+ if (numPeople < 3) {
     displayError();
     return;
   }
 
+ if (repeatedNames() == true) {
+    $("#error-label").css('opacity', '1');
+    $("#error-label").html('You cannot have repeated names');
+    return; 
+}
+
   var inputs = enumerateInputs();
   var pairs = createSantas(inputs);
+
+
+  callPHP(pairs);
 
 });
 
@@ -115,6 +140,10 @@ function createSantas(inputs) {
 
     while (people[i][0] == chooseArray[randomIndex][0]) {
       randomIndex = getRandomInt(0, chooseArray.length - 1);
+      if (people[i][0] == chooseArray[randomIndex][0] && chooseArray.length == 1) {
+      	  createSantas(inputs);
+	  return;
+      }
     }
 
     //console.log(people[i][0]);
@@ -144,7 +173,7 @@ function createSantas(inputs) {
 
   }
 
-  console.log(people);
+  //console.log(people);
   return people;
 
   return -1;
@@ -183,4 +212,48 @@ function logList(str, li) {
     console.log(item);
   });
   console.log("");
+}
+
+
+function callPHP(pairs) {
+  
+/*  var httpc = new XMLHttpRequest();
+  var url = "test.php"
+  httpc.open("GET", url, true);
+
+  httpc.onreadystatechange = function() { //Call a function when the state changes.
+    if(httpc.readyState == 4 && httpc.status == 200) { // complete and no errors
+        alert(httpc.responseText); 
+    }
+  };
+  httpc.send(pairs);
+*/
+
+    dataToSend = new Array();
+    var jsonArg = new Object();
+
+    for(var i = 0; i < pairs.length; i++) {
+    	jsonArg.key = pairs[i][0];
+        jsonArg.value = pairs[i][1];
+        dataToSend.push(jsonArg);
+	jsonArg = new Object();
+    }
+   // console.log(dataToSend);
+
+    $.ajax({
+        url: "send-emails.php",
+        data: {myData: dataToSend},
+	type: "POST",
+	success: function(response) {
+	    if (response.substring(response.length - 2, response.length) != "-1") {
+		window.location.href = 'successpage.html';
+		$("#submit-button").prop("disabled", "true");
+	    } else {
+		console.log("Failed to send emails");
+		$("#error-label").html("Invalid Email(s). Please check the emails and try again.");
+		$("#error-label").css("opacity", "1");
+	    }
+	}
+	
+    });
 }
