@@ -7,13 +7,3 @@ topButton.addEventListener("click", function() {
     behavior: 'smooth'
   })
 });
-
-
-
-
-$("#py-button").click(function() {
-  $.ajax({
-    url: "test.py",
-    context: document.body
-  })
-});
