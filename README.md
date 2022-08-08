@@ -12,4 +12,4 @@ Finally, the user is informed if the emails were sent successfully, or if there 
 
 
 ### Preview
-<img width="873" alt="Screen Shot 2022-08-08 at 5 37 24 PM" src="https://user-images.githubusercontent.com/54595949/183519108-5024b103-5add-4aca-8fc9-c368cd8a8347.png">
+https://share.vidyard.com/watch/nxKJxYdLxgNM7jeacMYxQM?
