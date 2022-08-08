@@ -9,3 +9,7 @@ Upon submission of the user information, users get randomly paired with eachothe
 Next, the pairings returned by the algorithm are sent to the server in a JSON format. They are sent as strings using an HTTP request and parsed by the server in a PHP script. Then, using SMTP credentials, the PHP script sends each respective user an email using the Amazon Web Services Simple Email Service (AWS SES).
 
 Finally, the user is informed if the emails were sent successfully, or if there was an invalid email address.
+
+
+### Preview
+<img width="873" alt="Screen Shot 2022-08-08 at 5 37 24 PM" src="https://user-images.githubusercontent.com/54595949/183519108-5024b103-5add-4aca-8fc9-c368cd8a8347.png">
