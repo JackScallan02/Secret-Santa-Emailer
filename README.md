@@ -12,4 +12,4 @@ Finally, the user is informed if the emails were sent successfully, or if there 
 
 
 ### Preview
-https://share.vidyard.com/watch/nxKJxYdLxgNM7jeacMYxQM?
+<img src="http://recordit.co/ofi1r7MfLn">
