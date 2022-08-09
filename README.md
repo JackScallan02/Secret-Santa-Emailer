@@ -12,4 +12,4 @@ Finally, the user is informed if the emails were sent successfully, or if there 
 
 
 ### Preview
-<img src="https://recordit.co/RcRi7lZEae">
+<img src="https://recordit.co/RcRi7lZEae" width=480 height=200>
