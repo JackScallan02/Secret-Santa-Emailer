@@ -25,7 +25,6 @@ function addPerson() { //Adds a div with 1 input into the form
 
   div1.appendChild(input);
   div1.appendChild(input2);
-
   form.appendChild(div1);
 }
 
@@ -84,7 +83,6 @@ function repeatedNames() {
 
 var submitButton = document.getElementById("submit-button");
 submitButton.addEventListener("click", function() {
-
  var numPeople = getNumberOfPeople();
  if (numPeople < 3) {
     displayError();
@@ -136,20 +134,17 @@ function createSantas(inputs) {
   }
 
   shuffle(people); //Start iterating through each person in a random order
-
   var chooseArray = people.slice();
-
   var randomIndex;
 
   for (var i = 0; i < people.length; i++) {
-
     randomIndex = getRandomInt(0, chooseArray.length - 1);
 
     while (people[i][0] == chooseArray[randomIndex][0]) {
       randomIndex = getRandomInt(0, chooseArray.length - 1);
       if (people[i][0] == chooseArray[randomIndex][0] && chooseArray.length == 1) {
       	  createSantas(inputs);
-	        return;
+	  return;
       }
     }
 
@@ -175,11 +170,9 @@ function createSantas(inputs) {
         break;
       }
     }
-
   }
 
   return people;
-
 }
 
 
@@ -221,7 +214,6 @@ function logList(str, li) {
 
 
 function callPHP(pairs) {
-
     dataToSend = new Array();
     var jsonArg = new Object();
 
@@ -229,7 +221,7 @@ function callPHP(pairs) {
       jsonArg.key = pairs[i][0];
       jsonArg.value = pairs[i][1];
       dataToSend.push(jsonArg);
-	    jsonArg = new Object();
+      jsonArg = new Object();
     }
 
     $.ajax({
