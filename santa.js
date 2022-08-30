@@ -74,7 +74,7 @@ function repeatedNames() {
     var found = new Set();
     for (var i = 0; i < inputs.length; i++) {
 	  if (found.has(inputs[i][0])) {
-		    return true;
+	  	return true;
 	  }
         found.add(inputs[i][0])
     }
