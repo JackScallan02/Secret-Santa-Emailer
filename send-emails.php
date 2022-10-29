@@ -40,10 +40,10 @@ function sendEmail($person, $email, $santaName) {
 	$subject = 'Your Secret Santa';
 
 	// The plain-text body of the email
-	$bodyText =  'Hello, ' . $person . '. Your santa is ' . $santaName;
+	$bodyText =  'Hello, ' . $person . '. Your secret santa is ' . $santaName;
 
 	// The HTML-formatted body of the email
-	$bodyHtml = '<h1>Hello, ' . $person . '.</h1> <p>Your santa is ' . $santaName . '</p>';
+	$bodyHtml = '<center><h1 style="font-family:Trebuchet MS">Hello, ' . $person . '</h1> <p style="font-family:Trebuchet MS; font-size:18px">Your secret santa is <b style="color: Crimson">' . $santaName . '!</b></p><img src="https://drive.google.com/uc?export=view&id=1Vo2DzvdjdLB2gW6EmdxkuEmdxkuFguiSNRRg0w" alt="Santa Picture" style="width: 250px"/></center>';
 
 	$mail = new PHPMailer(true);
 
